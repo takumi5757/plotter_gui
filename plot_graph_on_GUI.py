@@ -88,7 +88,7 @@ def UpdateData_Graph(event):
     PickUpSigNameForFile = PickUpSigNameForFile.replace(":","_")
     PickUpSigNameForFile = PickUpSigNameForFile.replace("/","_")
 
-    KaikakuOutputFileName = PickUpSigNameForFile + 'csv'
+    KaikakuOutputFileName = PickUpSigNameForFile + '.csv'
 
     csv_input2 = pd.read_csv(filepath_or_buffer = Kaikaku_FileName, sep=",")
     csv_input2.to_csv(KaikakuOutputFileName, index = False, columns=[PickUpSigName])
@@ -100,7 +100,7 @@ def UpdateData_Graph(event):
     plt.xlabel('time')
     plt.grid(True)
     plt.plot(x,y)
-    plot.show()
+    plt.show()
 
 
 #Labeles
