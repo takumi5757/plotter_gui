@@ -37,11 +37,9 @@ def UpdateData_Graph(event):
     KaikakuOutputFileName = PickUpSigNameForFile + '.csv'
     KaikakuOutputFileName2 = PickUpSigNameForFile + '2.csv'
 
-    csv_input2 = pd.read_csv(filepath_or_buffer = Kaikaku_FileName, sep=",")
-    csv_input2.to_csv(KaikakuOutputFileName, index = False, columns=[PickUpSigName])
+    csv_input2 = pd.read_csv(filepath_or_buffer = Kaikaku_FileName, sep=",", usecols=[PickUpSigName])
 
-    csv_input2 = pd.read_csv(filepath_or_buffer = Kaikaku_FileName2, sep=",")
-    csv_input2.to_csv(KaikakuOutputFileName2, index = False, columns=[PickUpSigName])
+    csv_input2 = pd.read_csv(filepath_or_buffer = Kaikaku_FileName2, sep=",", usecols=[PickUpSigName])
 
     y_1 = pd.read_csv(filepath_or_buffer=KaikakuOutputFileName, sep=",")
     y_2 = pd.read_csv(filepath_or_buffer=KaikakuOutputFileName2, sep=",")
@@ -64,8 +62,8 @@ def UpdateData_Graph(event):
     plt.grid(True)
     plt.plot(x, y_1)
     plt.plot(x, y_2)
+    plt.savefig(f'png/{PickUpSigNameForFile}.png')
     plt.show()
-    plt.savefig(f'png/{PickUpSigNameForFile}.png')#動いてない
 
 
 def set_menubar(root):
