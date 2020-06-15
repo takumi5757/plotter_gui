@@ -1,8 +1,5 @@
-#import Libs
-#import matplotlib
 import pandas as pd
 import matplotlib.pyplot as plt
-#matplotlib.use('TkAgg')
 import tkinter as Tk
 import statistics as st
 
@@ -68,7 +65,7 @@ def UpdateData_Graph(event):
     plt.plot(x, y_1)
     plt.plot(x, y_2)
     plt.show()
-    plt.savefig('png/{}.png',PickUpSigNameForFile)#動いてない
+    plt.savefig(f'png/{PickUpSigNameForFile}.png')#動いてない
 
 
 def set_menubar(root):
