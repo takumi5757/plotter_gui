@@ -19,6 +19,7 @@ class View():
         self.view2()
         self.view3()
         self.view4()
+        self.menu()
 
         self.Static10 = tk.Label(text=u'Copyright (c) 2020 Nissan Motor Co.,Ltd. All rights reserved')
         self.Static10.pack(anchor=tk.W)
@@ -83,6 +84,16 @@ class View():
         self.Button_TollMap = tk.Button(text=u'Execute', width=20)
         self.Button_TollMap.place(x=500, y=330)
 
+    def menu(self):
+
+        self.menubar = tk.Menu(self.master)
+        self.filemenu = tk.Menu(self.menubar, tearoff=0)
+        self.filemenu.add_separator()
+        self.menubar.add_cascade(label="Tool", menu=self.filemenu)
+        self.helpmenu = tk.Menu(self.menubar, tearoff=0)
+        self.menubar.add_cascade(label="Help", menu=self.helpmenu)
+        self.master.config(menu=self.menubar)
+
 
 class Controller():
     def __init__(self,master,model,view):
@@ -97,6 +108,20 @@ class Controller():
         self.view.Button_InputVal3["command"] = self.GetEditBoxValue3
         self.view.Button_Clear3["command"] = self.DeleteEntryValue3
         self.view.Button_TollMap["command"] = self.UpdateData_Graph
+
+        self.view.filemenu.add_command(label="Open", command=self.donothing)
+        self.view.filemenu.add_command(label="Save Result", command=self.donothing)
+        self.view.filemenu.add_command(label="Save as...", command=self.donothing)
+        self.view.filemenu.add_command(label="Close", command=self.donothing)
+        self.view.filemenu.add_command(label="Exit", command=self.master.quit)
+        self.view.helpmenu.add_command(label="About us", command=self.donothing)
+        self.view.helpmenu.add_command(label="manual", command=self.donothing)
+
+    def donothing(self):
+        self.filein = tk.Toplevel(self.master)
+        self.button = tk.Button(self.filein, text="Not Supported")
+        self.button.pack()
+
 
     def GetEditBoxValue1(self):
         value = self.view.EditBox1.get()
@@ -182,6 +207,7 @@ class Application(tk.Frame):
         self.view = View(master,self.model)
 
         self.controller = Controller(master,self.model,self.view)
+        
 
 def main():
     win = tk.Tk()
