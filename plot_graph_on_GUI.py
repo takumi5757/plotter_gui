@@ -15,6 +15,9 @@ class View():
         self.master = master
         self.model = model
 
+        self.filename = tk.StringVar(value="Input the File Name or Path.")
+        self.filename2 = tk.StringVar(value="Input the File Name or Path.")
+
         self.view1()
         self.view2()
         self.view3()
@@ -28,60 +31,48 @@ class View():
 
     def view1(self):
         #labeles
-        self.Static1 = tk.Label(text=r"File Name")
-        self.Static1.pack(anchor=tk.W)
+        self.Static1 = tk.Label(text=r"File Name 1")
+        self.Static1.place(x=0, y=10)
 
-        #Entry
-        self.EditBox1 = tk.Entry(width=70)
-        self.EditBox1.insert(tk.END,  "Input the file name.")
-        self.EditBox1.pack(anchor=tk.W)
-
-        #Button
-        self.Button_InputVal1 = tk.Button(text=u'Input File Name', width=20)
-        self.Button_InputVal1.pack(anchor=tk.W)
+        #GUIからファイルを選択
+        self.EditBox1 = tk.Entry(text="",textvariable= self.filename ,width=70)
+        self.EditBox1.place(x=0, y=30)
+        self.FileDialogButton1 = tk.Button(text='open')
+        self.FileDialogButton1.place(x=0, y=50)
 
         self.Button_Clear1 = tk.Button(text=u'Clear File Name', width=20)
-        self.Button_Clear1.pack(anchor=tk.W)
+        self.Button_Clear1.place(x=60, y=50)
 
     def view2(self):
         #labeles
-        self.Static2 = tk.Label(text=r"File Name")
-        self.Static2.pack(anchor=tk.W)
+        self.Static2 = tk.Label(text=r"File Name 2")
+        self.Static2.place(x=0, y=110)
 
         #Entry
-        self.EditBox2 = tk.Entry(width=70)
-        self.EditBox2.insert(tk.END,  "Input the file name.")
-        self.EditBox2.pack(anchor=tk.W)
-
-        #Button
-        self.Button_InputVal2 = tk.Button(text=u'Input File Name', width=20)
-        self.Button_InputVal2.pack(anchor=tk.W)
+        #GUIからファイルを選択
+        self.EditBox2 = tk.Entry(text="",textvariable= self.filename2 ,width=70)
+        self.EditBox2.place(x=0, y=130)
+        self.FileDialogButton2 = tk.Button(text='open')
+        self.FileDialogButton2.place(x=0, y=150)
 
         self.Button_Clear2 = tk.Button(text=u'Clear File Name', width=20)
-        self.Button_Clear2.pack(anchor=tk.W)
+        self.Button_Clear2.place(x=60, y=150)
 
     def view3(self):
         #Labeles
         self.Static3 = tk.Label(text=u'Signal Name')
-        self.Static3.pack(anchor=tk.W)
+        self.Static3.place(x=0, y=230)
 
         self.EditBox3 = tk.Entry(width=70)
         self.EditBox3.insert(tk.END, "Input the signal name.")
-        self.EditBox3.pack(anchor=tk.W)
+        self.EditBox3.place(x=0, y=250)
 
         #Button
-        self.Button_InputVal3 = tk.Button(text=u'Input File Name', width=20)
-        self.Button_InputVal3.pack(anchor=tk.W)
-
-        self.Button_Clear3 = tk.Button(text=u'Clear File Name', width=20)
-        self.Button_Clear3.pack(anchor=tk.W)
+        self.Button_Clear3 = tk.Button(text=u'Clear column Name', width=20)
+        self.Button_Clear3.place(x=0, y=270)
 
     def view4(self):
-        #Labeles
-        self.Static_Tollgate = tk.Label(text=u'Plot Graph')
-        self.Static_Tollgate.place(x=500, y=305)
-
-        self.Button_TollMap = tk.Button(text=u'Execute', width=20)
+        self.Button_TollMap = tk.Button(text=u'Plot', width=20)
         self.Button_TollMap.place(x=500, y=330)
 
     def menu(self):
@@ -101,13 +92,13 @@ class Controller():
         self.model = model
         self.view = view
 
-        self.view.Button_InputVal1["command"] = self.GetEditBoxValue1
         self.view.Button_Clear1["command"] = self.DeleteEntryValue1
-        self.view.Button_InputVal2["command"] = self.GetEditBoxValue2
         self.view.Button_Clear2["command"] = self.DeleteEntryValue2
-        self.view.Button_InputVal3["command"] = self.GetEditBoxValue3
         self.view.Button_Clear3["command"] = self.DeleteEntryValue3
         self.view.Button_TollMap["command"] = self.UpdateData_Graph
+
+        self.view.FileDialogButton1["command"] = self.openfiledialog1
+        self.view.FileDialogButton2["command"] = self.openfiledialog2
 
         self.view.filemenu.add_command(label="Open", command=self.donothing)
         self.view.filemenu.add_command(label="Save Result", command=self.donothing)
@@ -117,29 +108,24 @@ class Controller():
         self.view.helpmenu.add_command(label="About us", command=self.donothing)
         self.view.helpmenu.add_command(label="manual", command=self.donothing)
 
+    def openfiledialog1(self):
+        file = tk.filedialog.askopenfilename()
+        self.view.filename.set(file)
+    def openfiledialog2(self):
+        file = tk.filedialog.askopenfilename()
+        self.view.filename2.set(file)
+
     def donothing(self):
         self.filein = tk.Toplevel(self.master)
         self.button = tk.Button(self.filein, text="Not Supported")
         self.button.pack()
 
-
-    def GetEditBoxValue1(self):
-        value = self.view.EditBox1.get()
-        print(value)
-
     def DeleteEntryValue1(self):
         self.view.EditBox1.delete(0, tk.END)
 
-    def GetEditBoxValue2(self):
-        value = self.view.EditBox2.get()
-        print(value)
 
     def DeleteEntryValue2(self):
         self.view.EditBox2.delete(0, tk.END)
-
-    def GetEditBoxValue3(self):
-        value = self.view.EditBox3.get()
-        print(value)
 
     def DeleteEntryValue3(self):
         self.view.EditBox3.delete(0, tk.END)
