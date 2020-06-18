@@ -1,6 +1,6 @@
 import tkinter as tk
-import random as rd
-import time
+#import random as rd
+#import time
 import pandas as pd
 import matplotlib.pyplot as plt
 
