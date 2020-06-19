@@ -73,12 +73,11 @@ class View():
         self.helpmenu = tk.Menu(self.menubar, tearoff=0)
         self.menubar.add_cascade(label="Help", menu=self.helpmenu)
         self.master.config(menu=self.menubar)
-    """
+    
     def open_plot_win(self):
         self.plotwin = tk.Toplevel(self.master)
-        self.Button_delete = tk.Button(text=u'Delete plot windows', width=20)
-        self.Button_delete.place(anchor=tk.W)
-    """
+        self.plotwin.geometry("300x300")
+
 
 class Controller():
     def __init__(self,master,model,view):
@@ -101,13 +100,10 @@ class Controller():
         self.view.helpmenu.add_command(label="About us", command=self.donothing)
         self.view.helpmenu.add_command(label="manual", command=self.donothing)
 
-        #self.view.Button_delete["command"] = self.DeleteSubWindows
-
     def openfiledialog1(self):
         fTyp = [("","*.csv")]
         iDir = os.path.abspath(os.path.dirname(__file__))
         file_list = tk.filedialog.askopenfilenames(filetypes = fTyp,initialdir = iDir)
-        print("open")
         self.file_list = list(file_list)
         self.view.filename.set(file_list)
 
@@ -127,10 +123,10 @@ class Controller():
 
     def DeleteEntryValue3(self):
         self.view.EditBox3.delete(0, tk.END)
-    """
+    
     def DeleteSubWindows(self):
         self.view.plot_win.destroy()
-    """
+    
     def list_to_graph_conveter(self):
         #Set files name to read
         FileName_list = self.file_list #Result of PZ1A file name
@@ -145,8 +141,6 @@ class Controller():
             
     
         for i,sig_ in enumerate(SigName_list):
-            plot_win = tk.Toplevel(self.master)
-            plot_win.geometry("300x300")
             fig = plt.figure()
             ax = fig.add_subplot(111)
 
@@ -155,15 +149,16 @@ class Controller():
 
             plt.savefig(f'png/test_{sig_}.png')
 
-            
+            self.view.open_plot_win()
+
             #tkinterのウインド上部にグラフを表示する
-            canvas = FigureCanvasTkAgg(fig, master=plot_win)
+            canvas = FigureCanvasTkAgg(fig, master=self.view.plotwin)
             canvas.draw()
             canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
             
             #tkinterのウインド下部にツールを追加する
-            toolbar = NavigationToolbar2Tk(canvas, plot_win)
+            toolbar = NavigationToolbar2Tk(canvas, self.view.plotwin)
             toolbar.update()
             canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
             
