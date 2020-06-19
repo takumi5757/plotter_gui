@@ -1,9 +1,10 @@
 import tkinter as tk
-#import random as rd
-#import time
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
+
+from matplotlib.backends.backend_tkagg import (
+    FigureCanvasTkAgg, NavigationToolbar2Tk)
 
 class Model():
     def __init__(self):
@@ -72,7 +73,12 @@ class View():
         self.helpmenu = tk.Menu(self.menubar, tearoff=0)
         self.menubar.add_cascade(label="Help", menu=self.helpmenu)
         self.master.config(menu=self.menubar)
-
+    """
+    def open_plot_win(self):
+        self.plotwin = tk.Toplevel(self.master)
+        self.Button_delete = tk.Button(text=u'Delete plot windows', width=20)
+        self.Button_delete.place(anchor=tk.W)
+    """
 
 class Controller():
     def __init__(self,master,model,view):
@@ -95,10 +101,13 @@ class Controller():
         self.view.helpmenu.add_command(label="About us", command=self.donothing)
         self.view.helpmenu.add_command(label="manual", command=self.donothing)
 
+        #self.view.Button_delete["command"] = self.DeleteSubWindows
+
     def openfiledialog1(self):
         fTyp = [("","*.csv")]
         iDir = os.path.abspath(os.path.dirname(__file__))
         file_list = tk.filedialog.askopenfilenames(filetypes = fTyp,initialdir = iDir)
+        print("open")
         self.file_list = list(file_list)
         self.view.filename.set(file_list)
 
@@ -118,7 +127,10 @@ class Controller():
 
     def DeleteEntryValue3(self):
         self.view.EditBox3.delete(0, tk.END)
-
+    """
+    def DeleteSubWindows(self):
+        self.view.plot_win.destroy()
+    """
     def list_to_graph_conveter(self):
         #Set files name to read
         FileName_list = self.file_list #Result of PZ1A file name
@@ -128,19 +140,36 @@ class Controller():
             f = open(SigName_list)
             data = f.read()
             SigName_list = data.split('\n')
+        else:#直接入力を想定
+            SigName_list = SigName_list.split(',')
+            
+    
+        for i,sig_ in enumerate(SigName_list):
+            plot_win = tk.Toplevel(self.master)
+            plot_win.geometry("300x300")
+            fig = plt.figure()
+            ax = fig.add_subplot(111)
 
-        
-        #plot_num = len(SigName_list)
-        #fig,axes = plt.subplots(nrows=1,ncols=plot_num,figsize=(10,8))
-        for sig_ in SigName_list:
-            for file_ in FileName_list:
-                self.UpdateData_Graph(file_, sig_)
+            for file_ in FileName_list: 
+                self.UpdateData_Graph(file_, sig_, ax)
 
+            plt.savefig(f'png/test_{sig_}.png')
+
+            
+            #tkinterのウインド上部にグラフを表示する
+            canvas = FigureCanvasTkAgg(fig, master=plot_win)
+            canvas.draw()
+            canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+
+            
+            #tkinterのウインド下部にツールを追加する
+            toolbar = NavigationToolbar2Tk(canvas, plot_win)
+            toolbar.update()
+            canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+            
 
     #Create the Animation on the Graph
-    def UpdateData_Graph(self, FileName, SigName):
-        print("filesig")
-        print(FileName,SigName)
+    def UpdateData_Graph(self, FileName, SigName, ax):
 
         def hexadecimal_to_decimal(df, PickUpSigName):
             """ 
@@ -171,20 +200,18 @@ class Controller():
 
         CSVName = os.path.split(FileName)[1].replace(".","_")
 
-        print(f"kaikaku_filename=={Kaikaku_FileName}")
-        y_1 = pd.read_csv(filepath_or_buffer=Kaikaku_FileName, sep=",", usecols=[PickUpSigName])
+        y = pd.read_csv(filepath_or_buffer=Kaikaku_FileName, sep=",", usecols=[PickUpSigName])
         x = pd.read_csv(filepath_or_buffer=Kaikaku_FileName, usecols=[0])
 
         #base==16 →　base==10 if data is 'str'
-        if type(y_1[PickUpSigName][1]) is str:
-            y_1 = hexadecimal_to_decimal(y_1, PickUpSigName)
+        if type(y[PickUpSigName][1]) is str:
+            y = hexadecimal_to_decimal(y, PickUpSigName)
 
-        plt.title(TitleName)
-        plt.xlabel('time')
-        plt.grid(True)
-        plt.plot(x, y_1)
-        plt.savefig(f'png/{CSVName}_{PickUpSigNameForFile}.png')
-        plt.show()
+        ax.set_title(TitleName)
+        ax.set_xlabel('time')
+        ax.grid(True)
+        ax.plot(x, y)
+
 
 class Application(tk.Frame):
     def __init__(self, master):
