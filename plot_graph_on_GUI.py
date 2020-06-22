@@ -21,45 +21,44 @@ class View():
         self.filename2 = tk.StringVar(value="Input the Signal Name or Text Path.")
 
         self.view1()
+        self.view2()
         self.view3()
-        self.view4()
         self.menu()
 
         self.Static10 = tk.Label(text=u'Copyright (c) 2020 Nissan Motor Co.,Ltd. All rights reserved')
         self.Static10.pack(anchor=tk.W)
         self.Static10.place(x=0, y=390)
 
+        self.Static_png = tk.Label(text=u'Graph → png/(filename)_csv_(signalname).png')
+        self.Static_png.pack(anchor=tk.W)
+        self.Static_png.place(x=0, y=330)
+
 
     def view1(self):
         #labeles
-        self.Static1 = tk.Label(text=r"File Name")
+        self.Static1 = tk.Label(text=r"File Name (ex. 1.csv,2.csv)")
         self.Static1.place(x=0, y=10)
 
         #GUIからファイルを選択
         self.EditBox1 = tk.Entry(text="",textvariable= self.filename ,width=70)
         self.EditBox1.place(x=0, y=30)
-        self.FileDialogButton1 = tk.Button(text='open')
-        self.FileDialogButton1.place(x=0, y=50)
 
         self.Button_Clear1 = tk.Button(text=u'Clear File Name', width=20)
-        self.Button_Clear1.place(x=60, y=50)
+        self.Button_Clear1.place(x=0, y=50)
 
-    def view3(self):
+    def view2(self):
         #Labeles
-        self.Static3 = tk.Label(text=u'Signal Name')
-        self.Static3.place(x=0, y=230)
+        self.Static2 = tk.Label(text=u'Signal Name (ex. signal.txt or sig1,sig2)')
+        self.Static2.place(x=0, y=230)
 
-        self.EditBox3 = tk.Entry(text="", textvariable= self.filename2, width=70)
-        self.EditBox3.place(x=0, y=250)
-
-        self.FileDialogButton3 = tk.Button(text='open')
-        self.FileDialogButton3.place(x=0, y=270)
+        self.EditBox2 = tk.Entry(text="", textvariable= self.filename2, width=70)
+        self.EditBox2.place(x=0, y=250)
 
         #Button
-        self.Button_Clear3 = tk.Button(text=u'Clear column Name', width=20)
-        self.Button_Clear3.place(x=60, y=270)
+        self.Button_Clear2 = tk.Button(text=u'Clear column Name', width=20)
+        self.Button_Clear2.place(x=0, y=270)
 
-    def view4(self):
+    def view3(self):
         self.Button_TollMap = tk.Button(text=u'Plot', width=20)
         self.Button_TollMap.place(x=500, y=330)
 
@@ -79,11 +78,8 @@ class Controller():
         self.view = view
 
         self.view.Button_Clear1["command"] = self.DeleteEntryValue1
-        self.view.Button_Clear3["command"] = self.DeleteEntryValue3
+        self.view.Button_Clear2["command"] = self.DeleteEntryValue2
         self.view.Button_TollMap["command"] = self.list_to_graph_conveter
-
-        self.view.FileDialogButton1["command"] = self.openfiledialog1
-        self.view.FileDialogButton3["command"] = self.openfiledialog2
 
         self.view.filemenu.add_command(label="Open", command=self.donothing)
         self.view.filemenu.add_command(label="Save Result", command=self.donothing)
@@ -93,21 +89,7 @@ class Controller():
         self.view.helpmenu.add_command(label="About us", command=self.donothing)
         self.view.helpmenu.add_command(label="manual", command=self.donothing)
 
-        #self.view.Button_delete["command"] = self.DeleteSubWindows
-
-    def openfiledialog1(self):
-        fTyp = [("","*.csv")]
-        iDir = os.path.abspath(os.path.dirname(__file__))
-        file_list = tk.filedialog.askopenfilenames(filetypes = fTyp,initialdir = iDir)
-        print("open")
-        self.file_list = list(file_list)
-        self.view.filename.set(file_list)
-
-    def openfiledialog2(self):
-        fTyp = [("","*.txt")]
-        iDir = os.path.abspath(os.path.dirname(__file__))
-        file_ = tk.filedialog.askopenfilename(filetypes = fTyp,initialdir = iDir)
-        self.view.filename2.set(file_)
+    
 
     def donothing(self):
         self.filein = tk.Toplevel(self.master)
@@ -117,20 +99,15 @@ class Controller():
     def DeleteEntryValue1(self):
         self.view.EditBox1.delete(0, tk.END)
 
-    def DeleteEntryValue3(self):
-        self.view.EditBox3.delete(0, tk.END)
-    
-    def DeleteSubWindows(self):
-        self.view.plot_win.destroy()
-
-    def DeleteSubWindows_test(self, win):
-        win.destroy()
+    def DeleteEntryValue2(self):
+        self.view.EditBox2.delete(0, tk.END)
     
     def list_to_graph_conveter(self):
         #Set files name to read
-        FileName_list = self.file_list #Result of PZ1A file name
-        #FileName_list = self.view.EditBox1.get()
-        SigName_list = self.view.EditBox3.get() # list.txt
+        FileName_list = self.view.EditBox1.get()
+        SigName_list = self.view.EditBox2.get() # *.txtも可
+
+        FileName_list = FileName_list.split(',')
 
         if str(os.path.splitext(SigName_list)[1]) == '.txt':
             f = open(SigName_list)
@@ -172,7 +149,6 @@ class Controller():
                 df: pd.DataFrame
             @return:
                 df: pd.DataFrame
-
             """
             map_obj = map(lambda x: int(x, base=16), df[PickUpSigName])
             df = pd.DataFrame(map_obj, columns=[PickUpSigName])
@@ -214,7 +190,7 @@ class Application(tk.Frame):
         self.model = Model()
 
         master.geometry(str(self.model.width)+"x"+str(self.model.height))
-        master.title("Plot_Graph Ver 1.0")
+        master.title("Plot_Graph Ver 1.1")
 
         self.view = View(master,self.model)
 
