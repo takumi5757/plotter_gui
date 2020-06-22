@@ -55,7 +55,7 @@ class View():
         self.EditBox2.place(x=0, y=250)
 
         #Button
-        self.Button_Clear2 = tk.Button(text=u'Clear column Name', width=20)
+        self.Button_Clear2 = tk.Button(text=u'Clear Signal Name', width=20)
         self.Button_Clear2.place(x=0, y=270)
 
     def view3(self):
