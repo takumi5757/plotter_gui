@@ -21,7 +21,6 @@ class View():
         self.filename2 = tk.StringVar(value="Input the Signal Name or Text Path.")
 
         self.view1()
-        #self.view2()
         self.view3()
         self.view4()
         self.menu()
@@ -65,7 +64,6 @@ class View():
         self.Button_TollMap.place(x=500, y=330)
 
     def menu(self):
-
         self.menubar = tk.Menu(self.master)
         self.filemenu = tk.Menu(self.menubar, tearoff=0)
         self.filemenu.add_separator()
@@ -73,12 +71,6 @@ class View():
         self.helpmenu = tk.Menu(self.menubar, tearoff=0)
         self.menubar.add_cascade(label="Help", menu=self.helpmenu)
         self.master.config(menu=self.menubar)
-    """
-    def open_plot_win(self):
-        self.plotwin = tk.Toplevel(self.master)
-        self.Button_delete = tk.Button(text=u'Delete plot windows', width=20)
-        self.Button_delete.place(anchor=tk.W)
-    """
 
 class Controller():
     def __init__(self,master,model,view):
@@ -127,13 +119,17 @@ class Controller():
 
     def DeleteEntryValue3(self):
         self.view.EditBox3.delete(0, tk.END)
-    """
+    
     def DeleteSubWindows(self):
         self.view.plot_win.destroy()
-    """
+
+    def DeleteSubWindows_test(self, win):
+        win.destroy()
+    
     def list_to_graph_conveter(self):
         #Set files name to read
         FileName_list = self.file_list #Result of PZ1A file name
+        #FileName_list = self.view.EditBox1.get()
         SigName_list = self.view.EditBox3.get() # list.txt
 
         if str(os.path.splitext(SigName_list)[1]) == '.txt':
@@ -142,8 +138,8 @@ class Controller():
             SigName_list = data.split('\n')
         else:#直接入力を想定
             SigName_list = SigName_list.split(',')
-            
-    
+        
+
         for i,sig_ in enumerate(SigName_list):
             plot_win = tk.Toplevel(self.master)
             plot_win.geometry("300x300")
@@ -160,13 +156,10 @@ class Controller():
             canvas = FigureCanvasTkAgg(fig, master=plot_win)
             canvas.draw()
             canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-
             
             #tkinterのウインド下部にツールを追加する
             toolbar = NavigationToolbar2Tk(canvas, plot_win)
             toolbar.update()
-            canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-            
 
     #Create the Animation on the Graph
     def UpdateData_Graph(self, FileName, SigName, ax):
