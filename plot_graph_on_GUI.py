@@ -29,7 +29,7 @@ class View():
         self.Static10.pack(anchor=tk.W)
         self.Static10.place(x=0, y=390)
 
-        self.Static_png = tk.Label(text=u'Graph → png/(filename)_csv_(signalname).png')
+        self.Static_png = tk.Label(text=u'Graph → png/(filename)_(signalname).png')
         self.Static_png.pack(anchor=tk.W)
         self.Static_png.place(x=0, y=330)
 
@@ -103,6 +103,7 @@ class Controller():
         self.view.EditBox2.delete(0, tk.END)
     
     def list_to_graph_conveter(self):
+        path = 'png'
         #Set files name to read
         FileName_list = self.view.EditBox1.get()
         SigName_list = self.view.EditBox2.get() # *.txtも可
@@ -123,10 +124,12 @@ class Controller():
             fig = plt.figure()
             ax = fig.add_subplot(111)
 
-            for file_ in FileName_list: 
+            for file_ in FileName_list:
                 self.UpdateData_Graph(file_, sig_, ax)
 
-            plt.savefig(f'png/test_{sig_}.png')
+            if not os.path.isdir(path):
+                os.makedirs(path)
+            plt.savefig(path + f'/{file_.replace(".csv","")}_{sig_}.png')
 
             
             #tkinterのウインド上部にグラフを表示する
@@ -166,8 +169,6 @@ class Controller():
         PickUpSigNameForFile = PickUpSigNameForFile.replace("]","_")
         PickUpSigNameForFile = PickUpSigNameForFile.replace(":","_")
         PickUpSigNameForFile = PickUpSigNameForFile.replace("/","_")
-
-        CSVName = os.path.split(FileName)[1].replace(".","_")
 
         y = pd.read_csv(filepath_or_buffer=Kaikaku_FileName, sep=",", usecols=[PickUpSigName])
         x = pd.read_csv(filepath_or_buffer=Kaikaku_FileName, usecols=[0])
