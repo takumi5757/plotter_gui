@@ -104,11 +104,13 @@ class Controller():
     
     def list_to_graph_conveter(self):
         path = 'png'
+        if not os.path.isdir(path):
+            os.makedirs(path)
         #Set files name to read
-        FileName_list = self.view.EditBox1.get()
+        FileNames = self.view.EditBox1.get()
         SigName_list = self.view.EditBox2.get() # *.txtも可
 
-        FileName_list = FileName_list.split(',')
+        FileName_list = FileNames.split(',')
 
         if str(os.path.splitext(SigName_list)[1]) == '.txt':
             f = open(SigName_list)
@@ -126,10 +128,9 @@ class Controller():
 
             for file_ in FileName_list:
                 self.UpdateData_Graph(file_, sig_, ax)
-
-            if not os.path.isdir(path):
-                os.makedirs(path)
-            plt.savefig(path + f'/{file_.replace(".csv","")}_{sig_}.png')
+            
+            FileNames = self.ProsessFileName(FileNames)
+            plt.savefig(path + f'/{FileNames}_{sig_}.png')
 
             
             #tkinterのウインド上部にグラフを表示する
@@ -142,7 +143,7 @@ class Controller():
             toolbar.update()
 
     #Create the Animation on the Graph
-    def UpdateData_Graph(self, FileName, SigName, ax):
+    def UpdateData_Graph(self, FileName, PickUpSigName, ax):
 
         def hexadecimal_to_decimal(df, PickUpSigName):
             """ 
@@ -161,14 +162,7 @@ class Controller():
         Kaikaku_FileName = FileName
 
         #Set parameters
-        PickUpSigName = SigName
         TitleName = PickUpSigName
-        
-        PickUpSigNameForFile = PickUpSigName.replace(".","_")
-        PickUpSigNameForFile = PickUpSigNameForFile.replace("[","_")
-        PickUpSigNameForFile = PickUpSigNameForFile.replace("]","_")
-        PickUpSigNameForFile = PickUpSigNameForFile.replace(":","_")
-        PickUpSigNameForFile = PickUpSigNameForFile.replace("/","_")
 
         y = pd.read_csv(filepath_or_buffer=Kaikaku_FileName, sep=",", usecols=[PickUpSigName])
         x = pd.read_csv(filepath_or_buffer=Kaikaku_FileName, usecols=[0])
@@ -181,7 +175,17 @@ class Controller():
         ax.set_xlabel('time')
         ax.grid(True)
         ax.plot(x, y)
+    
+    def ProsessFileName(self, filename):
+        filename = filename.replace(".csv","")
+        filename = filename.replace(",","_")
+        filename = filename.replace(".","_")
+        filename = filename.replace("[","_")
+        filename = filename.replace("]","_")
+        filename = filename.replace(":","_")
+        filename = filename.replace("/","_")
 
+        return filename
 
 class Application(tk.Frame):
     def __init__(self, master):
