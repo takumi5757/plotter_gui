@@ -130,6 +130,7 @@ class Controller():
                 self.UpdateData_Graph(file_, sig_, ax)
             
             FileNames = self.ProsessFileName(FileNames)
+            sig_ = self.ProsessFileName(sig_)
             plt.savefig(path + f'/{FileNames}_{sig_}.png')
 
             
@@ -177,7 +178,6 @@ class Controller():
         ax.plot(x, y)
     
     def ProsessFileName(self, filename):
-        filename = filename.replace(".csv","")
         filename = filename.replace(",","_")
         filename = filename.replace(".","_")
         filename = filename.replace("[","_")
